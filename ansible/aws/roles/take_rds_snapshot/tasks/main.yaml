@@ -1,0 +1,41 @@
+---
+- name: Get time from the system
+  shell: "date +%Y-%m-%d-%H-%M-%S"
+  register: current_time
+
+- name: Store time stdout in fact
+  set_fact:
+    current_time: "{{ current_time.stdout }}"
+
+- name: Create Postgres DB snapshot and wait for it to become available
+  rds:
+    command: snapshot
+    region: "{{ region }}"
+    instance_name: "{{ source_db_name }}"
+    snapshot: "{{ snapshot_name }}-{{ current_time }}"
+    wait: yes
+    wait_timeout: 600
+  register: snapshot_out
+
+#- hosts: localhost
+#  connection: local
+#  gather_facts: yes
+#  vars:
+#    date: "{{ ansible_date_time.year }}-{{ ansible_date_time.month }}-{{ ansible_date_time.day }}-{{ ansible_date_time.hour }}-{{ ansible_date_time.minute }}"
+#    source_db_name: "{{ SOURCE_DB }}" # stagingdb
+#    new_db_name: "{{ NEW_DB  }}" # stagingdb2
+#    snapshot_name: "snapshot-{{ source_db_name }}--{{ date }}"
+#  tasks:
+#  - name : Take RDS snapshot
+#    rds  :
+#      command       : snapshot
+#      instance_name : "{{ source_db_name }}"
+#      snapshot      : "{{ snapshot_name }}"
+#      wait          : yes
+#    register: snapshot_out
+      
+#   - name : get facts
+#     rds  :
+#       command       : facts
+#       instance_name : "{{ instance_name }}"
+#     register: db_facts
