@@ -9,16 +9,16 @@
 
 - name: Create RDB snapshot and wait for it to become available
   tags: backup
-  command:  aws rds --region us-east-2 create-db-cluster-snapshot --db-cluster-snapshot-identifier sai-test-1-782021-2  --db-cluster-identifier lims-anc-tst
+  command:  aws rds --region us-east-2 create-db-cluster-snapshot --db-cluster-snapshot-identifier sai-test-1-782021-3  --db-cluster-identifier lims-anc-tst
   
 - name: sleep
   wait_for:
-    timeout: 6000
+    timeout: 300
   delegate_to: localhost
   
-#- name: sharing the RDS snapshot
-#  tags: sharing
-#  command: aws rds modify-db-cluster-snapshot-attribute --region us-east-2 --db-cluster-snapshot-identifier sai-test-1-782021-2 --attribute-name restore --values-to-add 122511138117
+- name: sharing the RDS snapshot
+  tags: sharing
+  command: aws rds modify-db-cluster-snapshot-attribute --region us-east-2 --db-cluster-snapshot-identifier sai-test-1-782021-3 --attribute-name restore --values-to-add 122511138117
 ####################################################
 #  rds:
 #    command: snapshot
