@@ -10,7 +10,7 @@
 - name: Create RDB snapshot and wait for it to become available
   tags: backup
   command:  aws rds --region us-east-2 create-db-cluster-snapshot --db-cluster-snapshot-identifier sai-test-1-782021-3  --db-cluster-identifier lims-anc-tst
-  
+ 
 - name: sleep
   wait_for:
     timeout: 300
