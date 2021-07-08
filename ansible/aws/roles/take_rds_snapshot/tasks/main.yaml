@@ -8,14 +8,15 @@
     current_time: "{{ current_time.stdout }}"
 
 - name: Create Postgres DB snapshot and wait for it to become available
-  rds:
-    command: snapshot
-    region: "{{ region }}"
-    instance_name: "{{ source_db_name }}"
-    snapshot: "{{ snapshot_name }}-{{ current_time }}"
-    wait: yes
-    wait_timeout: 600
-  register: snapshot_out
+  command:  aws rds --region us-east-2 create-db-cluster-snapshot --db-cluster-snapshot-identifier sai-test-1-782021-1  --db-cluster-identifier lims-anc-tst
+#  rds:
+#    command: snapshot
+#    region: "{{ region }}"
+ #   instance_name: "{{ source_db_name }}"
+#    snapshot: "{{ snapshot_name }}-{{ current_time }}"
+#    wait: yes
+#    wait_timeout: 600
+#  register: snapshot_out
 
 #- hosts: localhost
 #  connection: local
