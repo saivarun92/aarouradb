@@ -9,7 +9,7 @@
 
 - name: Create RDB snapshot and wait for it to become available
   tags: backup
-  command:  aws rds --region "{{ region }}" create-db-cluster-snapshot --db-cluster-snapshot-identifier "{{ snapshot-name }}" --db-cluster-identifier "{{ sourcedb-name }}"
+  command:  aws rds --region "{{ region }}" create-db-cluster-snapshot --db-cluster-snapshot-identifier "{{ snapshotname }}" --db-cluster-identifier "{{ sourcedb-name }}"
  
 - name: sleep
   wait_for:
