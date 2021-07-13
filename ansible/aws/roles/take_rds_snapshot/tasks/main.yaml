@@ -9,7 +9,7 @@
 
 - name: Create RDB snapshot and wait for it to become available
   tags: backup
-  command:  aws rds --region us-east-2 create-db-cluster-snapshot --db-cluster-snapshot-identifier "{{ snapshot-name }}" --db-cluster-identifier lims-anc-tst
+  command:  aws rds --region "{{ region }}" create-db-cluster-snapshot --db-cluster-snapshot-identifier "{{ snapshot-name }}" --db-cluster-identifier lims-anc-tst
  
 - name: sleep
   wait_for:
@@ -18,7 +18,7 @@
   
 - name: sharing the RDS snapshot
   tags: sharing
-  command: aws rds modify-db-cluster-snapshot-attribute --region us-east-2 --db-cluster-snapshot-identifier "{{ snapshot-name }}" --attribute-name restore --values-to-add "{{ target_account }}"
+  command: aws rds modify-db-cluster-snapshot-attribute --region "{{ region }}" --db-cluster-snapshot-identifier "{{ snapshot-name }}" --attribute-name restore --values-to-add "{{ target_account }}"
 ####################################################
 #  rds:
 #    command: snapshot
