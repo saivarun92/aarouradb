@@ -1,15 +1,7 @@
 ---
-- name: Get time from the system
-  shell: "date +%Y-%m-%d-%H-%M-%S"
-  register: current_time
-
-- name: Store time stdout in fact
-  set_fact:
-    current_time: "{{ current_time.stdout }}"
-
 - name: Create RDB snapshot and wait for it to become available
   tags: backup
-  command:  aws --profile devtest rds --region "{{ region }}" create-db-cluster-snapshot --db-cluster-snapshot-identifier "{{ snapshotname }}" --db-cluster-identifier "{{ sourcename }}"
+  command:  aws --profile "{{ sourcecred_profile }}" rds --region "{{ region }}" create-db-cluster-snapshot --db-cluster-snapshot-identifier "{{ snapshotname }}" --db-cluster-identifier "{{ sourceclustername }}"
  
 - name: sleep
   wait_for:
@@ -18,36 +10,37 @@
   
 - name: sharing the RDS snapshot
   tags: sharing
-  command: aws --profile devtest rds modify-db-cluster-snapshot-attribute --region "{{ region }}" --db-cluster-snapshot-identifier "{{ snapshot-name }}" --attribute-name restore --values-to-add "{{ target_account }}"
+  command: aws --profile "{{ sourcecred_profile }}" rds modify-db-cluster-snapshot-attribute --region "{{ region }}" --db-cluster-snapshot-identifier "{{ snapshotname }}" --attribute-name restore --values-to-add "{{ target_awsaccountid }}"
 ####################################################
-#  rds:
-#    command: snapshot
-#    region: "{{ region }}"
- #   instance_name: "{{ source_db_name }}"
-#    snapshot: "{{ snapshot_name }}-{{ current_time }}"
-#    wait: yes
-#    wait_timeout: 600
-#  register: snapshot_out
 
-#- hosts: localhost
-#  connection: local
-#  gather_facts: yes
-#  vars:
-#    date: "{{ ansible_date_time.year }}-{{ ansible_date_time.month }}-{{ ansible_date_time.day }}-{{ ansible_date_time.hour }}-{{ ansible_date_time.minute }}"
-#    source_db_name: "{{ SOURCE_DB }}" # stagingdb
-#    new_db_name: "{{ NEW_DB  }}" # stagingdb2
-#    snapshot_name: "snapshot-{{ source_db_name }}--{{ date }}"
-#  tasks:
-#  - name : Take RDS snapshot
-#    rds  :
-#      command       : snapshot
-#      instance_name : "{{ source_db_name }}"
-#      snapshot      : "{{ snapshot_name }}"
-#      wait          : yes
-#    register: snapshot_out
-      
-#   - name : get facts
-#     rds  :
-#       command       : facts
-#       instance_name : "{{ instance_name }}"
-#     register: db_facts
+
+- name: sleep
+  wait_for:
+    timeout: 60
+  delegate_to: localhost
+
+
+- name: Copy shanred RDB snapshot with manual
+  tags: copydb
+  command:  aws  --profile "{{ targetcred_profile }}" --region "{{ targetregion }}" rds copy-db-cluster-snapshot --source-db-cluster-snapshot-identifier arn:aws:rds:"{{ region }}":"{{ source_awsaccountid }}":cluster-snapshot:"{{ snapshotname }}" --target-db-cluster-snapshot-identifier "{{ newcopy-snapshotname }}" --kms-key-id "{{ kmsid }}"
+
+- name: sleep
+  wait_for:
+    timeout: 300
+  delegate_to: localhost
+
+
+#arn:aws:kms:us-east-2:122511138117:key/88bb6975-bed2-41d3-97b1-1a50baaab91d
+
+#################################################################
+
+    #- name: sleep
+  #  wait_for:
+    #    timeout: 300
+      #  delegate_to: localhost
+
+    #- name: restoring the RDS snapshot
+    #tags: restoring
+    #command: aws rds modify-db-cluster-snapshot-attribute --region us-east-2 --db-cluster-snapshot-identifier "{{ snapshot-name }}" --attribute-name restore --values-to-add 122511138117
+####################################################
+
