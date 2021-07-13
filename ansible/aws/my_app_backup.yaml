@@ -5,6 +5,6 @@
   strategy: free
   tasks:
     - include_role:
-        name: take_rds_snapshot
-      when: "inventory_hostname == 'localhost_rds_backup' in groups['bastian']"
+        name: "{{ rds_action }}"
+#      when: "inventory_hostname == 'localhost_rds_backup' in groups['bastian']"
 

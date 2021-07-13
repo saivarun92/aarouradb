@@ -1,12 +1,4 @@
 ---
-- name: Get time from the system
-  shell: "date +%Y-%m-%d-%H-%M-%S"
-  register: current_time
-
-- name: Store time stdout in fact
-  set_fact:
-    current_time: "{{ current_time.stdout }}"
-
 - name: Create RDB snapshot and wait for it to become available
   tags: backup
   command:  aws rds --region us-east-2 create-db-cluster-snapshot --db-cluster-snapshot-identifier "{{ snapshot-name }}" --db-cluster-identifier lims-anc-tst
@@ -18,7 +10,7 @@
   
 - name: sharing the RDS snapshot
   tags: sharing
-  command: aws rds modify-db-cluster-snapshot-attribute --region us-east-2 --db-cluster-snapshot-identifier "{{ snapshot-name }}" --attribute-name restore --values-to-add "{{ target_account }}"
+  command: aws rds modify-db-cluster-snapshot-attribute --region us-east-2 --db-cluster-snapshot-identifier "{{ snapshot-name }}" --attribute-name restore --values-to-add 122511138117
 ####################################################
 #  rds:
 #    command: snapshot
