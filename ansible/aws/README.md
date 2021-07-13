@@ -7,7 +7,7 @@ sourcecred_profile=devtest    #source account aws credentails profilename
  source_awsaccountid=238329888963                # we need to difne source aws account id number
  targetcred_profile=sandbox          #target account aws credentailsprofilename
  newcopy-snapshotname=copyfromshared-test   #target aws account name of the snapshot from sharedsnapshot
- kmsid=arn:aws:kms:us-east-2:122511138117:key/88bb6975-bed2-41d3-97b1-1a50baaab91d   #kmsiddetails
+ kmsid=arn:aws:kms:us-east-2:598430799738:key/0d4b8594-24d0-4ecd-aa7e-371659a22e2b     #kmsiddetails
  rds_action=take_rds_snapshot 
  
 
@@ -15,5 +15,5 @@ sourcecred_profile=devtest    #source account aws credentails profilename
 ansible-playbook my_app_backup.yaml -i inventories/poc/hosts \ 
 --extra-vars "sourcecred_profile=devtest region=us-east-2 rds_action=take_rds_snapshot targetregion=us-east-2 snapshotname=saitest13 \
  sourceclustername=lims-anc-tst  target_awsaccountid=598430799738 source_awsaccountid=238329888963  targetcred_profile=sandbox \
- newcopy-snapshotname=copyfromshared-test kmsid=arn:aws:kms:us-east-2:122511138117:key/88bb6975-bed2-41d3-97b1-1a50baaab91d rds_action=take_rds_snapshot" -vvv
+ newcopy-snapshotname=copyfromshared-test kmsid=arn:aws:kms:us-east-2:598430799738:key/0d4b8594-24d0-4ecd-aa7e-371659a22e2b rds_action=take_rds_snapshot" -vvv
 
