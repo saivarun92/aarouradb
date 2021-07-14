@@ -22,12 +22,12 @@
 
 - name: Copy shanred RDB snapshot with manual
   tags: copydb
-  command:  aws  --profile "{{ targetcred_profile }}" --region "{{ targetregion }}" rds copy-db-cluster-snapshot --source-db-cluster-snapshot-identifier arn:aws:rds:"{{ region }}":"{{ source_awsaccountid }}":cluster-snapshot:"{{ snapshotname }}" --target-db-cluster-snapshot-identifier "{{ newcopy-snapshotname }}" --kms-key-id "{{ kmsid }}"
+  command:  aws  --profile "{{ targetcred_profile }}" --region "{{ targetregion }}" rds copy-db-cluster-snapshot --source-db-cluster-snapshot-identifier arn:aws:rds:"{{ region }}":"{{ source_awsaccountid }}":cluster-snapshot:"{{ snapshotname }}" --target-db-cluster-snapshot-identifier "{{ newcopysnapshotname }}" --kms-key-id "{{ kmsid }}"
 
-- name: sleep
-  wait_for:
-    timeout: 300
-  delegate_to: localhost
+    #- name: sleep
+    #wait_for:
+    #timeout: 300
+    #delegate_to: localhost
 
 
 #arn:aws:kms:us-east-2:122511138117:key/88bb6975-bed2-41d3-97b1-1a50baaab91d
