@@ -24,23 +24,33 @@
   tags: copydb
   command:  aws  --profile "{{ targetcred_profile }}" --region "{{ targetregion }}" rds copy-db-cluster-snapshot --source-db-cluster-snapshot-identifier arn:aws:rds:"{{ region }}":"{{ source_awsaccountid }}":cluster-snapshot:"{{ snapshotname }}" --target-db-cluster-snapshot-identifier "{{ newcopysnapshotname }}" --kms-key-id "{{ kmsid }}"
 
-    #- name: sleep
-    #wait_for:
-    #timeout: 300
-    #delegate_to: localhost
-
-
-#arn:aws:kms:us-east-2:122511138117:key/88bb6975-bed2-41d3-97b1-1a50baaab91d
 
 #################################################################
+- name: sleep
+  wait_for:
+    timeout: 600
+  delegate_to: localhost
 
-    #- name: sleep
-  #  wait_for:
-    #    timeout: 300
-      #  delegate_to: localhost
+########################################
+- name: restore cluster from snapshot 
+  tags: restoreclusterdb
+  command:  aws  --profile "{{ targetcred_profile }}" --region "{{ targetregion }}" rds restore-db-cluster-from-snapshot --db-cluster-identifier "{{ targetclusterdbname}}" --snapshot-identifier "{{ newcopysnapshotname }}" --engine aurora-mysql --engine-version 5.7 --engine-mode provisioned --port 3306 --db-subnet-group-name default
 
-    #- name: restoring the RDS snapshot
-    #tags: restoring
-    #command: aws rds modify-db-cluster-snapshot-attribute --region us-east-2 --db-cluster-snapshot-identifier "{{ snapshot-name }}" --attribute-name restore --values-to-add 122511138117
-####################################################
+- name: sleep
+  wait_for:
+    timeout: 500
+  delegate_to: localhost
+#############################################################
+
+- name: Copy shanred RDB snapshot with manual
+  tags: lanchingdbinstance
+  command:  aws  --profile "{{ targetcred_profile }}" --region "{{ targetregion }}" rds create-db-instance --db-instance-identifier "{{ targetdbinstancename }}" --db-instance-class db.r5.large --engine aurora-mysql --db-cluster-identifier  "{{ targetclusterdbname}}"
+
+####################################################################################3
+#please cross check the instnces and db
+#####################################################################
+- name: sleep
+  wait_for:
+    timeout: 300
+  delegate_to: localhost
 
